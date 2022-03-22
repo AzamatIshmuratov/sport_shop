@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative',
     },
     title: {
-        marginLeft: theme.spacing(2),
+        marginLeft: '10px',
+        // marginLeft: theme.spacing(2),
         flex: 1,
     },
 }));
