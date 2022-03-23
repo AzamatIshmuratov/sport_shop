@@ -2,13 +2,13 @@
 .container {
     margin-right: auto;
     margin-left: auto;
-    padding-left: 15px;
-    padding-right: 15px;
+    /* padding-left: 15px;
+    padding-right: 15px; */
 }
 
 .content-wrap {
     background: #fff;
-    padding: 40px 30px;
+    padding: 20px 20px;
 }
 .content-wrap h1 {
     margin-top: 0;

@@ -70,19 +70,16 @@ export default function SimpleTabs() {
                     <div className="containEmbleme">
                         <img className='imgEmbleme' src="img/Embleme.png" alt="Письма мастера дзен" />
                     </div>
-                    {/* <div style={{ width: '20px' }}></div> */}
-                    <div >
-                        <ul className="ul">
-                            <li>
-                                <i className='icon-kc'/>
-                                <a target="_blank" href="http://hcsalavat.ru/" style={{color: '#eee'}}>Перейти на сайт клуба</a>
-                            </li>
-                            <li>
-                                <i className="icon-mail"></i>
-                                <a href="/" style={{color: '#eee'}}>Напишите нам</a> 
-                            </li>
-                        </ul>
-                    </div>
+                    <ul className="ul_custom">
+                        <li>
+                            <i className='icon-kc' />
+                            <a target="_blank" href="http://hcsalavat.ru/" style={{ color: '#eee' }}>Перейти на сайт клуба</a>
+                        </li>
+                        <li>
+                            <i className="icon-mail"></i>
+                            <a href="/" style={{ color: '#eee' }}>Напишите нам</a>
+                        </li>
+                    </ul>
                 </div>
                 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" className='vkladka'>
 
@@ -99,10 +96,10 @@ export default function SimpleTabs() {
                 <App />
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <Third/>
+                <Third />
             </TabPanel>
             <TabPanel value={value} index={3}>
-                <Clients/>
+                <Clients />
             </TabPanel>
         </div>
     );

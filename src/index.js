@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-// import './index.css';
+import './index.css';
 // import reportWebVitals from './reportWebVitals';
 
-import './app_2.css';
+// import './app_2.css';
 // import App from './App';
 import Base from './containers/Base';
 import createStore from './store';

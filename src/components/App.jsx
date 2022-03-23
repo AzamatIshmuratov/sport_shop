@@ -37,16 +37,12 @@ class App extends Component {
       <Container>
         <Menu />
         <Filter />
-        <Grid container spacing={1} sx={{justifyContent: 'space-around'}}>
+        {/* <Grid container spacing={2} sx={{justifyContent: 'space-between'}}> */}
+        <Grid container spacing={2}>
           {!isReady
             ? 'Загрузка...'
             : books.map((book, i) => <BookCard key={i} {...book} />)}
         </Grid>
-        {/* <Card.Group itemsPerRow={4}>
-          {!isReady
-            ? 'Загрузка...'
-            : books.map((book, i) => <BookCard key={i} {...book} />)}
-        </Card.Group> */}
       </Container>
     );
   }

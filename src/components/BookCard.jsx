@@ -8,17 +8,20 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import CurrencyRubleIcon from '@mui/icons-material/CurrencyRuble';
+import Divider from '@mui/material/Divider';
 
 const BookCard = book => {
   const { title, author, price, image, addToCart, addedCount } = book;
   return (
     <Grid item xs={3}>
-      <Card sx={{ maxWidth: 345 }}>
+      <Card>
         <CardMedia
           component="img"
           height="300"
           image={image}
           alt="green iguana"
+          sx={{objectFit: 'contain'}}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
@@ -27,10 +30,23 @@ const BookCard = book => {
           <Typography variant="body2" color="text.secondary">
             {author}
           </Typography>
+          <Divider sx={{margin: '10px 0'}}/>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}>
+            {price}
+            <CurrencyRubleIcon sx={{ fontSize: '18px' }} />
+          </div>
         </CardContent>
         <CardActions>
-          <Button size="small">Share</Button>
-          <Button size="small">Learn More</Button>
+          <Button
+            size="small"
+            onClick={addToCart.bind(this, book)}
+          >
+            Добавить в корзину {addedCount > 0 && `(${addedCount})`}
+          </Button>
         </CardActions>
       </Card>
     </Grid>
