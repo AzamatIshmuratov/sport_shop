@@ -1,6 +1,6 @@
 import React from "react";
 import { Menu } from "semantic-ui-react";
-// import Sale from "./Sale/sale";
+import Sale from "./Sale/sale";
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -15,6 +15,7 @@ import Avatar from '@mui/material/Avatar';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -25,17 +26,6 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const CartComponent = ({ title, id, image, removeFromCart }) => (
-  // <List selection divided verticalAlign="middle">
-  //   <List.Item>
-  //     <List.Content floated="right">
-  //       <Button onClick={removeFromCart.bind(this, id)} color="red">
-  //         Удалить
-  //       </Button>
-  //     </List.Content>
-  //     <Image avatar src={image} />
-  //     <List.Content>{title}</List.Content>
-  //   </List.Item>
-  // </List>
   <List dense sx={{ width: '100%', minWidth: 300, bgcolor: 'background.paper' }}>
     <ListItem
       key={id}
@@ -48,7 +38,10 @@ const CartComponent = ({ title, id, image, removeFromCart }) => (
           />
         </ListItemAvatar>
         <ListItemText id={id} primary={title} />
-        <Button onClick={removeFromCart.bind(this, id)}>
+        <Button onClick={() => {
+          removeFromCart(id);
+        }
+        }>
           Удалить
         </Button>
       </ListItemButton>
@@ -58,6 +51,9 @@ const CartComponent = ({ title, id, image, removeFromCart }) => (
 
 const MenuComponent = ({ totalPrice, count, items }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [saled, setSaled] = React.useState(false);
+
+  const handleCloseSaled = () => setSaled(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -67,16 +63,8 @@ const MenuComponent = ({ totalPrice, count, items }) => {
     setAnchorEl(null);
   };
   const open = Boolean(anchorEl);
+  console.log(count);
   return (
-    // <Box sx={{
-    //   display: 'flex',
-    //   justifyContent: 'space-between',
-    //   flexGrow: 1,
-    //   width: '100%',
-    //   alignItems: 'center',
-    //   border: '1px solid black',
-    //   borderRadius: '6px'
-    // }}>
     <Box sx={{ flexGrow: 1 }}>
       <Grid container >
         <Grid item xs={2}>
@@ -90,14 +78,16 @@ const MenuComponent = ({ totalPrice, count, items }) => {
         </Grid>
         <Grid item xs={2}>
           <Button
+            startIcon={<ShoppingCartIcon />}
             variant="outlined"
             color="success"
             onClick={handleClick}
-            sx={{ 
-              width: '100%', 
+            sx={{
+              width: '100%',
               textTransform: 'none',
               borderColor: '#808080'
             }}
+
           >
             Корзина (<b>{count}</b>)
           </Button>
@@ -131,13 +121,33 @@ const MenuComponent = ({ totalPrice, count, items }) => {
         anchorEl={anchorEl}
         onClose={handleClose}
       >
-        <React.Fragment>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}>
           {items.map(book => (
             <CartComponent {...book} />
           ))}
-        </React.Fragment>
-      </Popover>
+          {items.length
+            ?
 
+            <Button
+              style={{ textTransform: 'none' }}
+              onClick={() => {
+                setSaled(true);
+                handleClose();
+              }}
+              color="success"
+              variant="contained"
+            >
+              Оформить
+            </Button>
+            : null
+          }
+        </div>
+      </Popover>
+      <Sale
+        items={items}
+        saled={saled}
+        handleCloseSaled={handleCloseSaled}
+      />
     </Box>
   )
 };

@@ -4,17 +4,23 @@ import { DataGrid } from '@mui/x-data-grid';
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'Фамилия', headerName: 'Фамилия', width: 200 },
-    { field: 'Товар', headerName: 'Товар', width: 140 },
+    { field: 'surname', headerName: 'Фамилия', width: 200 },
+    { field: 'title', headerName: 'Товар', width: 140 },
     {
-        field: 'Стоимость',
+        field: 'cost',
         headerName: 'Стоимость',
         type: 'number',
         width: 140,
     },
     {
-        field: 'Стоимость со скидкой',
-        headerName: 'Стоимость со скидкой',
+        field: 'count_item',
+        headerName: 'Количество товара',
+        type: 'number',
+        width: 140,
+    },
+    {
+        field: 'dateZakaz',
+        headerName: 'Дата заказа',
         type: 'number',
         width: 200,
     },
@@ -32,14 +38,12 @@ export default class Table extends React.Component {
 
     componentDidMount() {
         let rows = this.props.data;
-        
+
         rows.forEach((element, id) => {
             element['id'] = id;
             console.log(element);
         });
-        this.setState({
-            rows: rows
-        })
+        this.setState({ rows })
     }
 
     render() {

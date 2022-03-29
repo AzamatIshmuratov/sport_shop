@@ -17,6 +17,9 @@ import ListItemText from '@mui/material/ListItemText';
 import SendIcon from '@mui/icons-material/Send';
 import MediaCard from './card';
 
+import { message } from 'antd';
+import DialogOplata from './form_oplata';
+
 // import { makeStyles } from '@mui/material/styles';
 
 function Alert(props) {
@@ -45,14 +48,15 @@ export default class Form extends React.Component {
             mail: '',
             openSuc: false,
             openSucZakaz: false,
+            openOplata: false,
             openErr: false,
             zakaz: false,
             items: this.props.items,
             dateZakaz: '',
-
-            clientId: 0,
             deliv: false,
             del: 0,
+            clientId: 0,
+
             price: 0,
             skidka: 0,
             priceSkid: 0,
@@ -63,56 +67,86 @@ export default class Form extends React.Component {
     sendClientData = () => {
         // const formData = new FormData();
         // formData.append(`json`, JSON.stringify(this.state));
-        try {
-            fetch('http://127.0.0.1:3080/api/sendClientData', {
-                method: "POST",
-                headers: {
-                    // "content-type": "application/x-www-form-urlencoded",
-                    "content-type": "application/json",
-                },
-                cookies: [],
-                body: JSON.stringify(this.state)
-            })
-                .then(response => response.json())
-                .then((info) => {
 
-                    let price = this.props.items.reduce((acc, el) => acc + el.price, 0);
-                    let skidka = price > 4000 ? 25 : 0;
-                    let priceSkid = skidka ? price * (1 - skidka / 100) : price;
-                    let date = new Date();
-                    let formDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-                    this.setState({
-                        openSuc: true,
-                        zakaz: true,
-                        price: price,
-                        skidka: skidka,
-                        priceSkid: priceSkid,
-                        dateZakaz: formDate,
-                    });
-                })
-                .then(() => { })
+        let st = this.state;
+        console.log('sendClientData------------', st);
+
+        let client = {
+            name: st.name,
+            sur: st.sur,
+            patr: st.patr,
+            city: st.city,
+            date: st.date,
+            mail: st.mail,
         }
-        catch (e) {
-            console.log(e);
-            this.setState({ openErr: true })
+
+        for (let k in client) {
+            if (!client[k].length) {
+                message.warn('Заполните все необходимые поля');
+                return;
+            }
         }
+
+        let allClients = localStorage.getItem('clients');
+        let arr = [];
+        console.log(allClients);
+        if (allClients) {
+            arr = JSON.parse(allClients);
+        }
+        arr.push(client);
+        localStorage.setItem('clients', JSON.stringify(arr));
+
+        let price = this.props.items.reduce((acc, el) => acc + el.price, 0);
+        let skidka = price > 4000 ? 25 : 0;
+        let priceSkid = skidka ? price * (1 - skidka / 100) : price;
+        let date = new Date();
+        let formDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+
+        this.setState({
+            openSuc: true,
+            zakaz: true,
+            openOplata: true,
+            price: price,
+            skidka: skidka,
+            priceSkid: priceSkid,
+            dateZakaz: formDate,
+        });
+        
+
+        message.success('Вы успешно зарегистрированы!');
+    }
+
+    closeModalOplata = () => {
+        this.setState({openOplata: false})
     }
 
     sendZakaz = () => {
         // отправляем заказ
-        fetch('http://127.0.0.1:3080/api/sendZakaz', {
-            method: "POST",
-            headers: {
-                // "content-type": "application/x-www-form-urlencoded",
-                "content-type": "application/json",
-            },
-            cookies: [],
-            body: JSON.stringify(this.state)
+
+        let zakazs = localStorage.getItem('zakazs');
+        let arr = [];
+        console.log(zakazs);
+        if (zakazs) {
+            arr = JSON.parse(zakazs);
+        }
+
+        this.state.items.forEach(item => {
+            let obj = {};
+            obj.mail = this.state.mail;
+            obj.surname = this.state.sur;
+            obj.title = item.title;
+            obj.item_id = item.id;
+            obj.count_item = item.addedCount + 1;
+            obj.cost = (item.addedCount + 1) * item.price;
+            obj.dateZakaz = this.state.dateZakaz;
+            obj.deliv = this.state.deliv;
+            obj.skidka = this.state.skidka;
+            arr.push(obj);
         })
-            .then(response => response.json())
-            .then(() => {
-                this.setState({openSucZakaz: true})
-            });
+
+        localStorage.setItem('zakazs', JSON.stringify(arr));
+
+        message.success('Заказ успешно сформирован');
     }
 
     getNumber = (num) => {
@@ -160,32 +194,44 @@ export default class Form extends React.Component {
 
     render() {
         return (
-            <form noValidate autoComplete="off" style={{ padding: '10px' }} >
+            <form noValidate autoComplete="off" style={{ padding: '10px', marginTop: '60px' }} >
                 <div style={{
-                    display: 'flex', flexDirection: 'row', width: '100%'
+                    display: 'flex',
+                    flexDirection: 'row',
+                    width: '100%',
                 }}>
-                    <div style={{ width: '35%' }}>
+                    <div
+                        style={{
+                            maxWidth: '300px',
+                            width: '35%',
+                            display: 'flex',
+                            // flexWrap: 'wrap'
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            gap: '20px'
+                        }}
+                    >
                         <div style={{
-                            width: '300px',
+                            width: '100%',
                             padding: '10px',
                             border: '2px solid green',
-                            marginBottom: '10px',
                             borderRadius: '4px',
                         }}
                         >Ваши персональные данные</div>
-                        <div>
-                            <TextField id="fam" label="Фамилия" type="search" variant="outlined" onChange={e => this.setState({ sur: e.target.value })} />
-                            <TextField id="name" label="Имя" type="search" variant="outlined" onChange={e => this.setState({ name: e.target.value })} />
-                        </div>
-                        <div>
-                            <TextField id="sur" label="Отчество" type="search" variant="outlined" onChange={e => this.setState({ patr: e.target.value })} />
-                            <TextField id="city" label="Город" type="search" variant="outlined" onChange={e => this.setState({ city: e.target.value })} />
-                        </div>
-                        <div>
-                            <FormattedInputs getNumber={this.getNumber} />
-                            <TextField id="mail" label="Почта" type="search" variant="outlined" onChange={e => this.setState({ mail: e.target.value })} />
-                        </div>
-                        <DatePickers getDate={this.getDate} />
+                        {/* <div style={{ width: '100%'}}> */}
+                        <TextField style={{ width: '100%' }} id="fam" label="Фамилия" type="search" required variant="outlined" onChange={e => this.setState({ sur: e.target.value })} />
+                        <TextField style={{ width: '100%' }} id="name" label="Имя" type="search" required variant="outlined" onChange={e => this.setState({ name: e.target.value })} />
+                        <TextField style={{ width: '100%' }} id="sur" label="Отчество" type="search" required variant="outlined" onChange={e => this.setState({ patr: e.target.value })} />
+                        <TextField style={{ width: '100%' }} id="city" label="Город" type="search" required variant="outlined" onChange={e => this.setState({ city: e.target.value })} />
+                        <TextField
+                            style={{ width: '100%' }}
+                            id="mail"
+                            label="Почта"
+                            required
+                            variant="outlined"
+                            onChange={e => this.setState({ mail: e.target.value })}
+                        />
+                        <DatePickers getDate={this.getDate} style={{ width: '100%' }} />
                         <Button
                             variant="contained"
                             color="primary"
@@ -193,74 +239,37 @@ export default class Form extends React.Component {
                             // className={classes.button}
                             startIcon={<SaveIcon />}
                             style={{
-                                marginTop: '10px',
-                                marginLeft: '10px'
+                                // marginTop: '10px',
+                                // marginLeft: '10px',
+                                width: '100%'
                             }}
                             onClick={this.sendClientData}
                         >
-                            Save
-                </Button>
-                        <Snackbar open={this.state.openSuc} autoHideDuration={4000} onClose={this.handleClose}>
-                            <Alert onClose={this.handleClose} severity="success">
-                                Вы успешно зарегистрированы!
-                     </Alert>
-                        </Snackbar>
-                        <Snackbar open={this.state.openErr} autoHideDuration={6000} onClose={this.handleCloseErr}>
+                            Сохранить данные
+                        </Button>
+
+                        {/* antd добавить */}
+                        {/* <Snackbar open={this.state.openErr} autoHideDuration={6000} onClose={this.handleCloseErr}>
                             <Alert onClose={this.handleCloseErr} severity="error">Error!</Alert>
-                        </Snackbar>
+                        </Snackbar> */}
 
-                        {this.state.zakaz ?
-                            <React.Fragment>
-                                <div style={{
-                                    width: '300px',
-                                    padding: '10px',
-                                    marginTop: '20px',
-                                    border: '2px solid green',
-                                    borderRadius: '4px'
-                                }}
-                                >
-                                    <div>Заказ</div>
-                                    <FormControlLabel
-                                        control={<Switch deliv={this.state.deliv} onChange={this.handleChange} name="checked" />}
-                                        label="Доставка"
-                                    />
-                                    <ListItem button>
-                                        <ListItemIcon>
-                                            <SendIcon />
-                                        </ListItemIcon>
-                                        <ListItemText primary={`Цена: ${this.state.price + this.state.del}`} />
-                                    </ListItem>
-                                    <ListItem button>
-                                        <ListItemIcon>
-                                            <SendIcon />
-                                        </ListItemIcon>
-                                        <ListItemText primary={`Ваша скидка: ${this.state.skidka}`} />
-                                    </ListItem>
-                                    <ListItem button>
-                                        <ListItemIcon>
-                                            <SendIcon />
-                                        </ListItemIcon>
-                                        <strong><ListItemText primary={`Цена со скидкой: ${this.state.priceSkid + this.state.del}`} /></strong>
-                                    </ListItem>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={this.sendZakaz}
-                                    >
-                                        Оплатить
-                    </Button>
-                                    <Snackbar open={this.state.openSucZakaz} autoHideDuration={4000} onClose={this.handleCloseZakaz}>
-                                        <Alert onClose={this.handleCloseZakaz} severity="success">
-                                            Заказ сформирован!
-                     </Alert>
-                                    </Snackbar>
-                                </div>
-
-                            </React.Fragment>
-                            : null
-                        }
+                        <DialogOplata
+                            name={this.state.name}
+                            sur={this.state.sur}
+                            city={this.state.city}
+                            openOplata={this.state.openOplata}
+                            deliv={this.state.deliv}
+                            del={this.state.del}
+                            price={this.state.price}
+                            skidka={this.state.skidka}
+                            priceSkid={this.state.priceSkid}
+                            dateZakaz={this.state.dateZakaz}
+                            handleCloseOplata={this.closeModalOplata}
+                            handleChange={this.handleChange}
+                            sendZakaz={this.sendZakaz}
+                        />
                     </div>
-                    <div style={{ width: '65%', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', maxHeight: '650px', overflow: 'scroll' }}>
+                    <div style={{ width: '100%', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', maxHeight: '650px', overflow: 'scroll', marginLeft: '10px' }}>
                         {this.props.items.map(item =>
                             <MediaCard item={item} />
                         )}

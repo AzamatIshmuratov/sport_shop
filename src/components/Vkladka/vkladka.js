@@ -11,6 +11,8 @@ import App from '../../containers/App';
 import './vkladka.css';
 import Third from './Third';
 import Clients from './Clients';
+import Contakts from './Contakts';
+import Geography from './Geography';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -70,7 +72,7 @@ export default function SimpleTabs() {
                     <div className="containEmbleme">
                         <img className='imgEmbleme' src="img/Embleme.png" alt="Письма мастера дзен" />
                     </div>
-                    <ul className="ul_custom">
+                    <ul className="ul_custom" style={{marginRight: '5px'}}>
                         <li>
                             <i className='icon-kc' />
                             <a target="_blank" href="http://hcsalavat.ru/" style={{ color: '#eee' }}>Перейти на сайт клуба</a>
@@ -85,8 +87,10 @@ export default function SimpleTabs() {
 
                     <Tab className='tabs' label="Главная" {...a11yProps(0)} />
                     <Tab label="Заказать" {...a11yProps(1)} />
-                    <Tab label="Программа лояльности" {...a11yProps(2)} />
-                    <Tab label="Заказы" {...a11yProps(3)} />
+                    <Tab label="Контакты" {...a11yProps(2)} />
+                    <Tab label="География болельщика" {...a11yProps(3)} />
+                    <Tab label="Программа лояльности" {...a11yProps(4)} />
+                    <Tab label="Заказы" {...a11yProps(5)} />
                 </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>
@@ -96,9 +100,15 @@ export default function SimpleTabs() {
                 <App />
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <Third />
+                <Contakts />
             </TabPanel>
             <TabPanel value={value} index={3}>
+                <Geography />
+            </TabPanel>
+            <TabPanel value={value} index={4}>
+                <Third />
+            </TabPanel>
+            <TabPanel value={value} index={5}>
                 <Clients />
             </TabPanel>
         </div>

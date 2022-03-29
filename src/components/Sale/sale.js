@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import Form from './form';
 
 const useStyles = makeStyles((theme) => ({
@@ -30,6 +30,16 @@ function Sale(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
+    React.useEffect(() => {
+        if (props.saled === true) {
+            handleClickOpen();
+            props.handleCloseSaled();
+        }
+        // return () => {
+        //     effect
+        // };
+    }, [props.saled])
+
     const handleClickOpen = () => {
         setOpen(true);
         console.log('props', props.items);
@@ -41,10 +51,10 @@ function Sale(props) {
 
     return (
         <div >
-            <Button onClick={handleClickOpen} style={{ marginTop: '4px' }}>
+            {/* <Button onClick={handleClickOpen} style={{ marginTop: '4px' }}>
                 Оформить
-      </Button>
-            <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition} style={{ zIndex: 10000 }}>
+            </Button> */}
+            <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition} style={{ zIndex: 1 }}>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
                         <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
@@ -52,13 +62,13 @@ function Sale(props) {
                         </IconButton>
                         <Typography variant="h6" className={classes.title}>
                             Покупка
-            </Typography>
+                        </Typography>
                         <Button autoFocus color="inherit" onClick={handleClose}>
-                            Сохранение
-            </Button>
+                            Отмена
+                        </Button>
                     </Toolbar>
                 </AppBar>
-                <Form items={props.items}/>
+                <Form items={props.items} />
                 {/* <List>
                     <ListItem button>
                         <ListItemText primary={props.items.length} secondary="Titania" />
@@ -79,4 +89,4 @@ let mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps) (Sale);
+export default connect(mapStateToProps)(Sale);

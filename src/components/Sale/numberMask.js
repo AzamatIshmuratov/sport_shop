@@ -8,13 +8,13 @@ import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     '& > *': {
+//       margin: theme.spacing(1),
+//     },
+//   },
+// }));
 
 function TextMaskCustom(props) {
   const { inputRef, ...other } = props;
@@ -65,7 +65,7 @@ NumberFormatCustom.propTypes = {
 };
 
 export default function FormattedInputs(props) {
-  const classes = useStyles();
+  // const classes = useStyles();
   const [values, setValues] = React.useState({
     textmask: '9',
     numberformat: '1320',
@@ -81,7 +81,8 @@ export default function FormattedInputs(props) {
   };
 
   return (
-    <div className={classes.root}>
+    // <div className={classes.root}>
+    <div >
       <FormControl>
         <InputLabel htmlFor="formatted-text-mask-input">Номер телефона</InputLabel>
         <Input

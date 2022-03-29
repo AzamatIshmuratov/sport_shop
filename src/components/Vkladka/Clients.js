@@ -6,16 +6,24 @@ export default class Clients extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            data: []
+            data: [{
+                "mail": "ddd@mail.ru",
+                "surname": "Петров",
+                "title": "Клюшка",
+                "item_id": 17,
+                "count_item": 1,
+                "cost": 3500,
+                "dateZakaz": "2022-2-29",
+                "deliv": true,
+                "skidka": 25
+            }]
         }
     }
 
     componentDidMount() {
-        fetch('http://127.0.0.1:3080/api/getClientsZakaz')
-            .then(response => response.json())
-            .then((data) => {
-                this.setState({ data: data[0] });
-            })
+        let data = JSON.parse(localStorage.getItem('zakazs'));
+        if (!data) return;
+        this.setState({data: [...this.state.data, ...data]})
     }
 
     render() {
